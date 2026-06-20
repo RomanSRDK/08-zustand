@@ -3,6 +3,7 @@
 import { useId } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNoteDraftStore } from "@/lib/store/noteStore";
 import { createNote, getAllTags } from "@/lib/api";
 import toast from "react-hot-toast";
 import css from "./NoteForm.module.css";
@@ -20,9 +21,29 @@ export default function NoteForm() {
   const router = useRouter();
   const queryClient = useQueryClient();
 
+  const handleSubmit = (formData: FormData) => {
+    const values = Object.fromEntries(
+      formData.entries(),
+    ) as unknown as FormValues;
+    mutate(values);
+  };
+
+  const { draft, setDraft, clearDraft } = useNoteDraftStore();
+  const handleChange = (
+    event: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
+    setDraft({
+      ...draft,
+      [event.target.name]: event.target.value,
+    });
+  };
+
   const { mutate } = useMutation({
     mutationFn: (noteData: FormValues) => createNote(noteData),
     onSuccess: () => {
+      clearDraft();
       queryClient.invalidateQueries({ queryKey: ["notes"] });
       router.push("/notes/filter/All");
       toast.success("Your note has been created", {
@@ -43,11 +64,6 @@ export default function NoteForm() {
     },
   });
 
-  const handleSubmit = (formData: FormData) => {
-    const values = Object.fromEntries(formData) as FormValues;
-    mutate(values);
-  };
-
   return (
     <form action={handleSubmit} className={css.form}>
       <div className={css.formGroup}>
@@ -57,18 +73,33 @@ export default function NoteForm() {
           name="title"
           className={css.input}
           id={id}
+          defaultValue={draft?.title}
+          onChange={handleChange}
           required
         />
       </div>
 
       <div className={css.formGroup}>
         <label htmlFor={id}>Content</label>
-        <textarea name="content" className={css.textarea} id={id} required />
+        <textarea
+          name="content"
+          className={css.textarea}
+          id={id}
+          defaultValue={draft?.content}
+          onChange={handleChange}
+          required
+        />
       </div>
 
       <div className={css.formGroup}>
         <label htmlFor={id}>Tag</label>
-        <select name="tag" className={css.select} id={id}>
+        <select
+          name="tag"
+          className={css.select}
+          id={id}
+          defaultValue={draft?.tag}
+          onChange={handleChange}
+        >
           {getAllTags.map((tag) => (
             <option key={tag} value={tag}>
               {tag}
