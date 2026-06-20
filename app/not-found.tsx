@@ -1,32 +1,24 @@
-"use client";
+import { Metadata } from "next";
+import NotFoundClient from "./NotFoundClient";
 
-import Link from "next/link";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-
-import css from "./not-found.module.css";
+export const metadata: Metadata = {
+  title: "404 - Page Not Found",
+  description: "The page you are looking for does not exist or has been moved.",
+  metadataBase: new URL("https://notehub.com"),
+  openGraph: {
+    title: "404 - Page Not Found",
+    description:
+      "The page you are looking for does not exist or has been moved.",
+    url: "/404",
+    images: {
+      url: "/og-meta-notehub.jpg",
+      width: 1200,
+      height: 630,
+      alt: "NoteHub Preview",
+    },
+  },
+};
 
 export default function NotFoundPage() {
-  const router = useRouter();
-
-  useEffect(() => {
-    const timer = setTimeout(() => router.push("/"), 5000);
-    return () => clearTimeout(timer);
-  }, [router]);
-
-  return (
-    <div className={css.wrapper}>
-      <h1 className={css.title}>404 - Page not found</h1>
-      <p className={css.description}>
-        Sorry, the page you&#39;re looking for doesn&#39;t exist.
-      </p>
-      <p>
-        You will be automatically redirected to the homepage in a few seconds…
-      </p>
-
-      <Link href="/" className={css.backButton}>
-        ← Go back home
-      </Link>
-    </div>
-  );
+  return <NotFoundClient />;
 }
