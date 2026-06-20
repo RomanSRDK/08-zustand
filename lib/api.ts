@@ -6,6 +6,8 @@ const token = process.env.NEXT_PUBLIC_NOTEHUB_TOKEN;
 axios.defaults.baseURL = "https://notehub-public.goit.study/api";
 axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
+export const getAllTags = ["Todo", "Work", "Personal", "Meeting", "Shopping"];
+
 interface FetchNotesResponse {
   notes: Note[];
   totalPages: number;
