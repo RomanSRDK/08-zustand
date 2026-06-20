@@ -1,6 +1,6 @@
 "use client";
+
 import { useParams } from "next/navigation";
-import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { fetchNoteById } from "@/lib/api";
 import Modal from "@/components/Modal/Modal";
@@ -8,7 +8,6 @@ import css from "./NotePreview.module.css";
 
 export default function NotePreviewClient() {
   const { id } = useParams<{ id: string }>();
-  const router = useRouter();
 
   const { isPending, isError, data } = useQuery({
     queryKey: ["note", id],
@@ -21,7 +20,7 @@ export default function NotePreviewClient() {
       {isPending && <p>Loading, please wait...</p>}
       {isError && <p>Something went wrong.</p>}
       {data && (
-        <Modal onClose={() => router.back()}>
+        <Modal>
           <div className={css.container}>
             <div className={css.item}>
               <div className={css.header}>

@@ -1,7 +1,6 @@
 "use client";
-import Modal from "@/components/Modal/Modal";
+
 import SearchBox from "@/components/SearchBox/SearchBox";
-import NoteForm from "@/components/NoteForm/NoteForm";
 import NoteList from "@/components/NoteList/NoteList";
 import Pagination from "@/components/Pagination/Pagination";
 
@@ -12,11 +11,11 @@ import toast, { Toaster } from "react-hot-toast";
 import { useDebounce } from "use-debounce";
 import css from "./NotesPage.module.css";
 
-import Loading from "../../../loading";
+import Loading from "@/app/loading";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 
 export default function NotesClient() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setcurrentPage] = useState(1);
 
   const [searchText, setSearchText] = useState("");
@@ -46,11 +45,6 @@ export default function NotesClient() {
     }
   }, [data]);
 
-  //MODAL WINDOW
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
-  //MODAL WINDOW
-
   const handleSearchChange = (value: string) => {
     setSearchText(value);
     setcurrentPage(1);
@@ -69,20 +63,14 @@ export default function NotesClient() {
           />
         )}
 
-        <button className={css.button} onClick={openModal}>
+        <Link href="/notes/action/create" className={css.button}>
           Create note +
-        </button>
+        </Link>
       </div>
 
       {isPending && <Loading />}
       {data && data.notes.length > 0 && <NoteList allNotes={data.notes} />}
       <Toaster />
-
-      {isModalOpen && (
-        <Modal onClose={closeModal}>
-          <NoteForm onClose={closeModal} />
-        </Modal>
-      )}
     </main>
   );
 }
